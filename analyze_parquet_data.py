@@ -1,4 +1,6 @@
 #!/.venv/bin/python
+# TODO This was pretty much just thrown together and is in dire need of refactoring
+
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -9,7 +11,7 @@ import seaborn as sns
 # ============================================================
 # SETTINGS
 # ============================================================
-DATA_PATH = Path("analysis/data.parquet")
+DATA_PATH = Path("merged/data.parquet")
 DURATION = "start_to_scheduled_end_days"
 
 # unit of analysis:
@@ -52,6 +54,8 @@ def duration_stats(frame, group_fields):
 
 
 def main():
+    section_number = 0
+    
     # ========================================================
     # 1. LOAD DATA AND CHOOSE THE OBSERVATION LEVEL
     # ========================================================
@@ -83,7 +87,8 @@ def main():
 
     df[DURATION] = pd.to_numeric(df[DURATION], errors="coerce")
 
-    print_section(1, "DATA COVERAGE AND QUALITY")
+    section_number = section_number + 1
+    print_section(section_number, "DATA COVERAGE AND QUALITY")
     print(f"Records in source file:                 {len(raw):,}")
     print(f"Unique analysis level:                  {ANALYSIS_LEVEL}")
     print(f"Records after deduplication:            {len(df):,}")
@@ -105,7 +110,8 @@ def main():
     # ========================================================
     percentiles = [0.10, 0.25, 0.50, 0.75, 0.90, 0.95, 0.99]
     duration = valid[DURATION]
-    print_section(2, "OVERALL DURATION STATISTICS (DAYS)")
+    section_number = section_number + 1
+    print_section(section_number, "OVERALL DURATION STATISTICS (DAYS)")
     print(duration.describe(percentiles=percentiles).round(3))
     print(
         "Interpretation: Median = 50% of markets are shorter; "
@@ -114,7 +120,8 @@ def main():
     )
     
     duration_kalshi = valid[valid['platform'] == 'kalshi'][DURATION]
-    print_section(1, "KALSHI DURATION STATISTICS (DAYS)")
+    section_number = section_number + 1
+    print_section(section_number, "KALSHI DURATION STATISTICS (DAYS)")
     print(duration_kalshi.describe(percentiles=percentiles).round(3))
     print(
         "Interpretation: Median = 50% of markets are shorter; "
@@ -123,7 +130,8 @@ def main():
     )
     
     duration_polymarket = valid[valid['platform'] == 'polymarket'][DURATION]
-    print_section(2, "POLYMARKET DURATION STATISTICS (DAYS)")
+    section_number = section_number + 1
+    print_section(section_number, "POLYMARKET DURATION STATISTICS (DAYS)")
     print(duration_polymarket.describe(percentiles=percentiles).round(3))
     print(
         "Interpretation: Median = 50% of markets are shorter; "
@@ -157,7 +165,8 @@ def main():
         "percentage": 100 * counts / len(valid),
     })
 
-    print_section(3, "HOW COMMON IS EACH DURATION RANGE?")
+    section_number = section_number + 1
+    print_section(section_number, "HOW COMMON IS EACH DURATION RANGE?")
     print(duration_bands.round(2).to_string())
 
     fig, ax = plt.subplots(figsize=(11, 6))
@@ -168,6 +177,7 @@ def main():
         ax.text(share + 0.3, index, f"{share:.1f}%", va="center")
     ax.set(title="How Long Are Markets Scheduled to Last?", xlabel="Share of markets (%)", ylabel="Duration range")
     plt.tight_layout()
+    plt.savefig("analysis/bar_market_durations_combined.svg")
     # plt.show()
 
     # ========================================================
@@ -221,7 +231,8 @@ def main():
         values="percentage"
     )
 
-    print_section(3, "DURATION DISTRIBUTION BY PLATFORM")
+    section_number = section_number + 1
+    print_section(section_number, "DURATION DISTRIBUTION BY PLATFORM")
     print(comparison_table.round(2).to_string())
 
 
@@ -270,13 +281,15 @@ def main():
 
     ax.legend(title="Platform")
     plt.tight_layout()
+    plt.savefig("analysis/bar_market_durations_by_platform.svg")
     # plt.show()
 
     # ========================================================
     # 4. LOGARITHMIC HISTOGRAM FOR RIGHT-SKEWED DATA
     # ========================================================
     positive = duration[duration > 0]
-    print_section(4, "DETAILS OF POSITIVE DURATIONS")
+    section_number = section_number + 1
+    print_section(section_number, "DETAILS OF POSITIVE DURATIONS")
     print(f"Positive durations: {len(positive):,}; zero durations are shown in Section 3.")
     if positive.nunique() > 1:
         edges = np.geomspace(positive.min(), positive.max(), 50)
@@ -287,6 +300,7 @@ def main():
         ax.set(title="Scheduled Duration Distribution (Positive Values)", xlabel="Days (logarithmic scale)", ylabel="Number of markets per logarithmic bin")
         ax.legend()
         plt.tight_layout()
+        plt.savefig("analysis/hist_log_durations_combined.svg")
         # plt.show()
         print("Note: The bins have equal width on the log scale, but cover different numbers of days.")
     else:
@@ -301,7 +315,8 @@ def main():
         .groupby(["platform", "event_id"])["market_id"]
         .nunique()
     )
-    print_section(5, "EVENT-TO-MARKET RELATIONSHIP BY PLATFORM")
+    section_number = section_number + 1
+    print_section(section_number, "EVENT-TO-MARKET RELATIONSHIP BY PLATFORM")
     if not markets_per_event.empty:
         event_structure = markets_per_event.groupby(level="platform").agg(
             events="size",
@@ -317,7 +332,8 @@ def main():
     # ========================================================
     # 6. COMPARE OVERALL DURATIONS BETWEEN PLATFORMS
     # ========================================================
-    print_section(6, "DURATION STATISTICS BY PLATFORM")
+    section_number = section_number + 1
+    print_section(section_number, "DURATION STATISTICS BY PLATFORM")
     platform_stats = duration_stats(valid, "platform")
     print(platform_stats.round(2).to_string())
 
@@ -326,13 +342,15 @@ def main():
     ax.barh(plot_platforms.index.astype(str), plot_platforms["pct_within_1_day"], color="teal")
     ax.set(xlim=(0, 100), title="Share of Markets Lasting At Most One Day, by Platform", xlabel="Share within one day (%)", ylabel="Platform")
     plt.tight_layout()
+    plt.savefig("analysis/bar_one_day_by_platform.svg")
     # plt.show()
 
     # ========================================================
     # 7. MISSING CATEGORY LABELS BY PLATFORM
     # ========================================================
     # If category coverage differs a lot between platforms, comparisons of known categories may be unrepresentative
-    print_section(7, "EVENT-CATEGORY COMPLETENESS BY PLATFORM")
+    section_number = section_number + 1
+    print_section(section_number, "EVENT-CATEGORY COMPLETENESS BY PLATFORM")
     coverage = valid.groupby("platform")["event_category"].agg(
         markets="size",
         categorized_markets=lambda s: s.notna().sum(),
@@ -345,8 +363,19 @@ def main():
     # ========================================================
     # Exclude missing category labels from this comparison
     # We retain them in the overall/platform comparisons
+    section_number = section_number + 1
+    print_section(section_number, "CATEGORIES COUNTS BY PLATFORM")
+    category_counts = (
+        df.groupby(["platform", "event_category"], dropna=False)
+            .size()
+            .rename("market_count")
+        ).groupby(level="platform", group_keys=False).apply(lambda group: group.sort_values(ascending=False))
+
+    print(category_counts)
+    
     known = valid.dropna(subset=["event_category"]).copy()
-    print_section(8, "DURATION STATISTICS BY KNOWN EVENT CATEGORY")
+    section_number = section_number + 1
+    print_section(section_number, "DURATION STATISTICS BY KNOWN EVENT CATEGORY")
     if known.empty:
         print("No known event categories; skipping category charts.")
     else:
@@ -361,6 +390,7 @@ def main():
             ax.barh(top.index.astype(str), top["pct_within_1_day"], color="seagreen")
             ax.set(xlim=(0, 100), title="Short-Duration Markets by Event Category", xlabel="Share lasting at most one day (%)", ylabel="Category")
             plt.tight_layout()
+            plt.savefig("analysis/bar_duartions_by_category.svg")
             # plt.show()
 
         # ====================================================
@@ -370,7 +400,8 @@ def main():
         most_common = known["event_category"].value_counts().head(TOP_CATEGORIES).index
         subset = known[known["event_category"].isin(most_common)]
         cross_stats = duration_stats(subset, ["platform", "event_category"])
-        print_section(9, "PLATFORM × CATEGORY DURATION STATISTICS")
+        section_number = section_number + 1
+        print_section(section_number, "PLATFORM × CATEGORY DURATION STATISTICS")
         print(cross_stats.round(2).to_string())
 
         # A heatmap compares the SAME category across platforms
@@ -386,6 +417,7 @@ def main():
             )
             ax.set(title="Short-Duration Share: Platform x Category", xlabel="Platform", ylabel="Event category")
             plt.tight_layout()
+            plt.savefig("analysis/heat_short_bet_by_category.svg")
             # plt.show()
         else:
             print("No platform/category cells meet the minimum heatmap sample size.")
@@ -398,10 +430,12 @@ def main():
         "platform", "event_id", "market_id", "market_title",
         "event_category", "start_at", "scheduled_end_at", DURATION,
     ]
-    print_section(10, "TEN LONGEST SCHEDULED MARKET DURATIONS")
+    section_number = section_number + 1
+    print_section(section_number, "TEN LONGEST SCHEDULED MARKET DURATIONS")
     print(valid.nlargest(10, DURATION)[columns_to_show].to_string(index=False))
 
-    print_section(11, "50 SHORTEST CRYPTO DURATIONS")
+    section_number = section_number + 1
+    print_section(section_number, "50 SHORTEST CRYPTO DURATIONS")
     print(valid[valid['event_category'] == "Crypto"].nsmallest(50, DURATION)[columns_to_show].to_string(index=False))
 
     # ========================================================
@@ -411,7 +445,8 @@ def main():
     # It cannot measure an individual bettor's holding period
     observed = "start_to_observed_close_days"
     paired = valid.loc[valid[observed].notna() & (valid[observed] >= 0)].copy()
-    print_section(12, "SCHEDULED VS OBSERVED DURATION (MATCHED ROWS)")
+    section_number = section_number + 1
+    print_section(section_number, "SCHEDULED VS OBSERVED DURATION (MATCHED ROWS)")
     if not paired.empty:
         paired["scheduled_minus_observed_days"] = paired[DURATION] - paired[observed]
         print(f"Markets with both durations:             {len(paired):,}")
@@ -421,8 +456,6 @@ def main():
         print("Warning: observed-close data are missing for many markets; this is a selected subset.")
     else:
         print("No valid paired observed-close durations found.")
-
-    print("\nAnalysis complete. Charts were displayed; the input file was not changed.")
     
     # ========================================================
     # 12. HOW HAVE MARKET DURATIONS CHANGED OVER TIME?
@@ -430,11 +463,11 @@ def main():
     # Have the typical scheduled durations of markets on
     # Kalshi and Polymarket changed over time?
     # ========================================================
-    # TODO
+    # TODO Implement timeseries comparission of markets, e.g., through durations, volumes, category lifecylce
     
     
     # Show charts
-    plt.show()
+    # plt.show() # show generated
 
 
 

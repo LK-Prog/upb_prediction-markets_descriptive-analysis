@@ -2,5 +2,5 @@
 
 python3 build_market_parquet.py \
   --input ./raw \
-  --output ./analysis/data.parquet
+  --output ./merged/data.parquet
 

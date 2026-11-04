@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
-python3 analyze_parquet_data.py
+{ 
+    python3 analyze_parquet_data.py
+} > "analysis/report.txt"

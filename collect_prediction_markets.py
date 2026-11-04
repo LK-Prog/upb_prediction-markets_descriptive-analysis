@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/.venv/bin/python#!/usr/bin/env python3
 """Download public Kalshi and Polymarket market/event metadata as raw JSON.
 
 Pilot (at most two pages PER paginated endpoint):
@@ -14,10 +14,10 @@ It does NOT download trade-by-trade data, historical order books or price ticks.
 WARNING:
 A complete crawl can be large, especially Kalshi combination markets.
 Use --exclude-kalshi-combos to reduce the amount of data.
-
-TODO:
-Improve exporting to put more emphasis on parallel exporting.
 """
+
+# TODO: Imporve performance via concurrency.
+# TODO: Improve typing, this contains an ungodly amount of unknows
 
 from __future__ import annotations
 

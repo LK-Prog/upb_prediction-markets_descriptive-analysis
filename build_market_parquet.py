@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/.venv/bin/python
 """Normalize downloaded Kalshi/Polymarket metadata into one Parquet table.
 
 Usage:
@@ -17,6 +17,9 @@ Timestamp interpretation:
     Kalshi settlement_ts measures settlement, not trading close.
     Negative durations are retained and flagged, never silently removed.
 """
+
+# TODO: Typing needs work as do the hardcoded categories
+# TODO: Performance needs to be improved, for larger datasets (million+) the parquet generation gets quite slow
 
 from __future__ import annotations
 
@@ -41,7 +44,14 @@ EVENT_DATASETS = {
     "kalshi": ("events", "events_multivariate"),
     "polymarket": ("events_open", "events_closed"),
 }
-
+# Only use an exact match to one of those topics as a fallback category: a generic tag (e.g., a person's name) is not necessarily an event category.
+POLYMARKET_TOP_LEVEL_TAGS = {
+    name.casefold(): name for name in (
+        "Politics", "Sports", "Crypto", "Esports", "Finance", "Geopolitics",
+        "Earnings", "Tech", "Culture", "World", "Economy", "Weather",
+        "Elections", "Mentions", "Art", "Climate & Science",
+    )
+}
 
 def parse_utc(value: Any) -> datetime | None:
     if value in (None, "", "null"):
@@ -237,12 +247,66 @@ def event_tags(event: dict | None) -> list[str]:
     return result
 
 
+def category_label(value: Any) -> str | None:
+    """Read a category name from a string or a labelled category object."""
+    if isinstance(value, dict):
+        value = value.get("label") or value.get("name")
+    if isinstance(value, str):
+        return value.strip() or None
+    return None
+
+
+def category_from_record(record: dict | None, source: str) -> tuple[str | None, str | None]:
+    """Prefer the explicit category, then Polymarket's categories[] relation."""
+    if not isinstance(record, dict):
+        return None, None
+    label = category_label(record.get("category"))
+    if label:
+        return label, f"{source}.category"
+    categories = record.get("categories")
+    if isinstance(categories, list):
+        for category in categories:
+            label = category_label(category)
+            if label:
+                return label, f"{source}.categories"
+    return None, None
+
+
+def polymarket_category(market: dict, event: dict | None,
+                        embedded_event: dict | None) -> tuple[str | None, str | None]:
+    """Find a sourced category without treating arbitrary tags as categories.
+
+    Event pages may omit the singular category while providing categories[].
+    Market records can also carry a category or an embedded event, even if the
+    separately downloaded event is missing or has incomplete metadata.
+    """
+    for source, record in (("event", event), ("embedded_event", embedded_event),
+                           ("market", market)):
+        label, origin = category_from_record(record, source)
+        if label:
+            return label, origin
+
+    # The API's generic tags are many-to-many. Only exact, recognized broad
+    # category tags are suitable for a single-category fallback.
+    for source, record in (("event", event), ("embedded_event", embedded_event),
+                           ("market", market)):
+        for tag in event_tags(record):
+            label = POLYMARKET_TOP_LEVEL_TAGS.get(tag.strip().casefold())
+            if label:
+                return label, f"{source}.tags"
+    return None, None
+
+
 def normalize_market(platform: str, identifier: str, source: str, fetched_at: str,
                      market: dict, event: dict | None, series: dict | None) -> dict:
-    if event is None and platform == "polymarket":
+    joined_event = event
+    embedded_event = None
+    if platform == "polymarket":
         embedded = market.get("events")
-        if isinstance(embedded, list) and embedded and isinstance(embedded[0], dict):
-            event = embedded[0]
+        if isinstance(embedded, list):
+            embedded_event = next((item for item in embedded if isinstance(item, dict)), None)
+        if event is None:
+            event = embedded_event
 
     if platform == "kalshi":
         created_raw, start_raw, end_raw = (market.get(x) for x in
@@ -294,6 +358,16 @@ def normalize_market(platform: str, identifier: str, source: str, fetched_at: st
         resolution_source = market.get("resolutionSource")
         outcome_labels = market.get("outcomes")
 
+    if platform == "polymarket":
+            category, category_source = polymarket_category(market, joined_event, embedded_event)
+    else:
+        category = category_label(event.get("category")) if event else None
+        category_source = "event.category" if category else None
+
+    tags = event_tags(event)
+    if not tags and embedded_event is not None:
+        tags = event_tags(embedded_event)
+
     created = parse_utc(created_raw)
     start = parse_utc(start_raw)
     end = parse_utc(end_raw)
@@ -327,8 +401,9 @@ def normalize_market(platform: str, identifier: str, source: str, fetched_at: st
         "source_dataset": source,
         "event_id": text_or_none(event_key),
         "event_title": text_or_none(event.get("title")) if event else None,
-        "event_category": text_or_none(event.get("category")) if event else None,
-        "event_tags_json": compact_json(event_tags(event)),
+        "event_category": category,
+        "event_category_source": category_source,
+        "event_tags_json": compact_json(tags),
         "series_ticker": text_or_none(series_ticker),
         "series_title": text_or_none(series.get("title")) if series else None,
         "series_category": text_or_none(series.get("category")) if series else None,
@@ -377,7 +452,8 @@ def normalize_market(platform: str, identifier: str, source: str, fetched_at: st
 def arrow_schema(pa: Any) -> Any:
     text_columns = [
         "platform", "market_id", "source_dataset", "event_id", "event_title",
-        "event_category", "event_tags_json", "series_ticker", "series_title", "series_category",
+        "event_category", "event_category_source", "event_tags_json",
+        "series_ticker", "series_title", "series_category",
         "market_title", "market_description", "market_type", "market_version", "market_status",
         "market_url", "resolution_source", "result_json", "outcomes_json", "date_warnings_json",
         "market_metadata_json", "event_metadata_json", "series_metadata_json",
