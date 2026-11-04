@@ -1,0 +1,289 @@
+1. DATA COVERAGE AND QUALITY
+======================================================================
+Records in source file:                 2,200,007
+Unique analysis level:                  market
+Records after deduplication:            2,200,007
+Missing market duration:                4,723
+Negative market duration:               4,039
+Exactly zero-day duration:              2,456
+Missing event category:                 1,008,439
+Valid durations used in analysis:       2,191,245
+Usable percentage after deduplication:  99.6%
+
+2. OVERALL DURATION STATISTICS (DAYS)
+======================================================================
+count    2191245.000
+mean           6.830
+std           39.917
+min            0.000
+10%            0.042
+25%            0.042
+50%            0.042
+75%            0.299
+90%            4.820
+95%           13.353
+99%          213.462
+max         1882.280
+Name: start_to_scheduled_end_days, dtype: float64
+Interpretation: Median = 50% of markets are shorter; p90 = 90% are shorter. A mean much larger than the median suggests a long right-hand tail.
+
+3. KALSHI DURATION STATISTICS (DAYS)
+======================================================================
+count    2000000.000
+mean           1.784
+std           17.725
+min            0.000
+10%            0.042
+25%            0.042
+50%            0.042
+75%            0.083
+90%            1.085
+95%            3.309
+99%           19.886
+max         1176.458
+Name: start_to_scheduled_end_days, dtype: float64
+Interpretation: Median = 50% of markets are shorter; p90 = 90% are shorter. A mean much larger than the median suggests a long right-hand tail.
+
+4. POLYMARKET DURATION STATISTICS (DAYS)
+======================================================================
+count    191245.000
+mean         59.607
+std         109.174
+min           0.000
+10%           0.815
+25%           4.402
+50%          13.093
+75%          61.682
+90%         213.443
+95%         305.694
+99%         421.299
+max        1882.280
+Name: start_to_scheduled_end_days, dtype: float64
+Interpretation: Median = 50% of markets are shorter; p90 = 90% are shorter. A mean much larger than the median suggests a long right-hand tail.
+
+5. HOW COMMON IS EACH DURATION RANGE?
+======================================================================
+                  markets  percentage
+duration_group                       
+Exactly 0 days       2456        0.11
+>0 to 1 hour      1431935       65.35
+>1 hour to 1 day   346596       15.82
+>1 to 7 days       235912       10.77
+>7 to 30 days       96717        4.41
+>30 to 90 days      28202        1.29
+>90 to 365 days     44273        2.02
+>365 days            5154        0.24
+
+6. DURATION DISTRIBUTION BY PLATFORM
+======================================================================
+platform          kalshi  polymarket
+duration_group                      
+Exactly 0 days      0.02        1.08
+>0 to 1 hour       71.53        0.74
+>1 hour to 1 day   16.46        9.05
+>1 to 7 days        9.86       20.23
+>7 to 30 days       1.19       38.15
+>30 to 90 days      0.39       10.71
+>90 to 365 days     0.48       18.10
+>365 days           0.07        1.95
+
+7. DETAILS OF POSITIVE DURATIONS
+======================================================================
+Positive durations: 2,188,789; zero durations are shown in Section 3.
+Note: The bins have equal width on the log scale, but cover different numbers of days.
+
+8. EVENT-TO-MARKET RELATIONSHIP BY PLATFORM
+======================================================================
+            events  average_markets_per_event  median_markets_per_event  max_markets_per_event  pct_multi_market_events
+platform                                                                                                               
+kalshi      112029                      17.85                       2.0                    512                    62.16
+polymarket   49489                       4.04                       1.0                    372                    34.53
+
+9. DURATION STATISTICS BY PLATFORM
+======================================================================
+            markets  mean_days  median_days  p90_days  pct_within_1_day  pct_over_30_days
+platform                                                                                 
+kalshi      2000000       1.78         0.04      1.09             88.01              0.94
+polymarket   191245      59.61        13.09    213.44             10.86             30.76
+
+10. EVENT-CATEGORY COMPLETENESS BY PLATFORM
+======================================================================
+            markets  categorized_markets  missing_category_pct
+platform                                                      
+kalshi      2000000               999645                 50.02
+polymarket   191245               184446                  3.56
+
+11. CATEGORIES COUNTS BY PLATFORM
+======================================================================
+platform    event_category        
+kalshi      NaN                       1000355
+            Crypto                     655400
+            Sports                     198006
+            Commodities                 64407
+            Financials                  49140
+            Climate and Weather         14150
+            Economics                   11439
+            Mentions                     2423
+            Entertainment                2285
+            Elections                     914
+            Politics                      809
+            Science and Technology        661
+            Social                          7
+            Companies                       4
+polymarket  Sports                     119953
+            Crypto                      28687
+            Politics                    17462
+            NaN                          8084
+            Culture                      5554
+            Weather                      3880
+            Mentions                     3231
+            Tech                         3072
+            Esports                      2090
+            World                        1570
+            Economy                      1493
+            Finance                      1393
+            Geopolitics                  1136
+            Elections                     849
+            US-current-affairs            386
+            Pop-Culture                   218
+            Coronavirus                   153
+            Business                      138
+            NBA Playoffs                  126
+            NFTs                          119
+            Art                            97
+            Chess                          77
+            Global Politics                58
+            Science                        51
+            Climate & Science              46
+            Ukraine & Russia               46
+            Olympics                       19
+            Poker                           7
+            -                               4
+            Space                           4
+            Sports-                         4
+Name: market_count, dtype: int64
+
+12. DURATION STATISTICS BY KNOWN EVENT CATEGORY
+======================================================================
+                        markets  mean_days  median_days  p90_days  pct_within_1_day  pct_over_30_days
+event_category                                                                                       
+Crypto                   683717       1.16         0.04      0.04             96.17              0.37
+Sports                   313363      26.31         4.91     83.57             24.29             14.49
+Commodities               64407       0.20         0.08      0.08             96.86              0.10
+Financials                49140       1.54         0.79      1.00             90.16              0.35
+Politics                  17450     133.05        84.44    310.36              2.38             77.29
+Climate and Weather       14150       0.87         0.04      1.71             73.34              0.64
+Economics                 11439       2.14         0.67      0.92             92.69              0.96
+Culture                    5209      95.95        29.06    319.09              2.48             49.13
+Mentions                   5179      34.24         3.47    101.84             23.94             20.62
+Weather                    3786      12.10         2.11     17.43              4.86              7.42
+Tech                       3043     123.93        80.17    257.20              0.66             91.03
+Entertainment              2285      40.68         7.92     75.04              2.14             15.67
+Esports                    2068       7.84         7.66     11.33             10.88              2.03
+Elections                  1702     342.76       379.69    553.75              0.18             83.90
+World                      1564     144.31        82.11    420.18              1.02             67.52
+Economy                    1472     117.14        49.45    362.19              0.14             72.89
+Finance                    1360     169.14        61.14    493.31              0.15             93.01
+Geopolitics                1108      91.87        35.01    270.61              3.61             60.29
+Science and Technology      661      22.95         4.92     14.04              0.00              8.62
+US-current-affairs          220     146.99        49.66    352.70              1.36             58.64
+Pop-Culture                 147      25.22        11.05     53.20              0.00             21.09
+Business                    111      40.60        14.31     98.22              0.00             34.23
+NFTs                        108      35.15        16.08     78.13              1.85             26.85
+Coronavirus                 103      44.82        33.12     92.98              0.00             55.34
+Categories with fewer than 100 markets are not listed above.
+
+13. PLATFORM × CATEGORY DURATION STATISTICS
+======================================================================
+                                markets  mean_days  median_days  p90_days  pct_within_1_day  pct_over_30_days
+platform   event_category                                                                                    
+kalshi     Crypto                655400       0.06         0.04      0.04             98.71              0.00
+           Sports                198006      11.31         2.08     14.66             35.43              7.82
+polymarket Sports                115357      52.05        13.21    176.17              5.16             25.94
+kalshi     Commodities            64407       0.20         0.08      0.08             96.86              0.10
+           Financials             49140       1.54         0.79      1.00             90.16              0.35
+polymarket Crypto                 28317      26.49         2.04     27.65             37.49              8.80
+           Politics               16641     131.05        84.44    305.71              2.00             79.10
+kalshi     Climate and Weather    14150       0.87         0.04      1.71             73.34              0.64
+           Economics              11439       2.14         0.67      0.92             92.69              0.96
+polymarket Culture                 5209      95.95        29.06    319.09              2.48             49.13
+           Weather                 3786      12.10         2.11     17.43              4.86              7.42
+           Mentions                2756      33.39         2.09     85.58             28.81             15.02
+kalshi     Mentions                2423      35.21         5.98    110.71             18.41             26.99
+           Politics                 809     174.22         7.49    827.75             10.26             40.05
+
+14. TEN LONGEST SCHEDULED MARKET DURATIONS
+======================================================================
+  platform event_id market_id                                                                   market_title event_category                         start_at          scheduled_end_at  start_to_scheduled_end_days
+polymarket    74044    667026                        Will Mamdani raise the minimum wage to $30 before 2027?       Politics 2025-11-05 22:16:29.865422+00:00 2031-01-01 04:59:00+00:00                  1882.279515
+polymarket    30829    559652             Will Gavin Newsom win the 2028 Democratic presidential nomination?      Elections 2025-07-11 18:35:56.805000+00:00 2028-11-08 04:59:00+00:00                  1215.432676
+polymarket    30829    559654           Will Pete Buttigieg win the 2028 Democratic presidential nomination?      Elections 2025-07-11 18:35:58.818000+00:00 2028-11-08 04:59:00+00:00                  1215.432653
+polymarket    30829    559653 Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?      Elections 2025-07-11 18:35:59.075000+00:00 2028-11-08 04:59:00+00:00                  1215.432650
+polymarket    30829    559656                Will Wes Moore win the 2028 Democratic presidential nomination?      Elections 2025-07-11 18:36:00.839000+00:00 2028-11-08 04:59:00+00:00                  1215.432629
+polymarket    30829    559655             Will Josh Shapiro win the 2028 Democratic presidential nomination?      Elections 2025-07-11 18:36:01.098000+00:00 2028-11-08 04:59:00+00:00                  1215.432626
+polymarket    30829    559657         Will Stephen A. Smith win the 2028 Democratic presidential nomination?      Elections 2025-07-11 18:36:02.893000+00:00 2028-11-08 04:59:00+00:00                  1215.432605
+polymarket    30829    559658            Will Kamala Harris win the 2028 Democratic presidential nomination?      Elections 2025-07-11 18:36:03.150000+00:00 2028-11-08 04:59:00+00:00                  1215.432602
+polymarket    30829    559660             Will Andy Beshear win the 2028 Democratic presidential nomination?      Elections 2025-07-11 18:36:04.790000+00:00 2028-11-08 04:59:00+00:00                  1215.432583
+polymarket    30829    559659         Will Gretchen Whitmer win the 2028 Democratic presidential nomination?      Elections 2025-07-11 18:36:05.047000+00:00 2028-11-08 04:59:00+00:00                  1215.432580
+
+15. 50 SHORTEST CRYPTO DURATIONS
+======================================================================
+platform              event_id                market_id                   market_title event_category                  start_at          scheduled_end_at  start_to_scheduled_end_days
+  kalshi KXHYPE15M-26OCT220615 KXHYPE15M-26OCT220615-15 HYPE price up in next 15 mins?         Crypto 2026-10-22 10:00:00+00:00 2026-10-22 10:15:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220630 KXHYPE15M-26OCT220630-30 HYPE price up in next 15 mins?         Crypto 2026-10-22 10:15:00+00:00 2026-10-22 10:30:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220645 KXHYPE15M-26OCT220645-45 HYPE price up in next 15 mins?         Crypto 2026-10-22 10:30:00+00:00 2026-10-22 10:45:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220700 KXHYPE15M-26OCT220700-00 HYPE price up in next 15 mins?         Crypto 2026-10-22 10:45:00+00:00 2026-10-22 11:00:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220715 KXHYPE15M-26OCT220715-15 HYPE price up in next 15 mins?         Crypto 2026-10-22 11:00:00+00:00 2026-10-22 11:15:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220730 KXHYPE15M-26OCT220730-30 HYPE price up in next 15 mins?         Crypto 2026-10-22 11:15:00+00:00 2026-10-22 11:30:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220600 KXHYPE15M-26OCT220600-00 HYPE price up in next 15 mins?         Crypto 2026-10-22 09:45:00+00:00 2026-10-22 10:00:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220745 KXHYPE15M-26OCT220745-45 HYPE price up in next 15 mins?         Crypto 2026-10-22 11:30:00+00:00 2026-10-22 11:45:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220815 KXHYPE15M-26OCT220815-15 HYPE price up in next 15 mins?         Crypto 2026-10-22 12:00:00+00:00 2026-10-22 12:15:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220830 KXHYPE15M-26OCT220830-30 HYPE price up in next 15 mins?         Crypto 2026-10-22 12:15:00+00:00 2026-10-22 12:30:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220845 KXHYPE15M-26OCT220845-45 HYPE price up in next 15 mins?         Crypto 2026-10-22 12:30:00+00:00 2026-10-22 12:45:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220915 KXHYPE15M-26OCT220915-15 HYPE price up in next 15 mins?         Crypto 2026-10-22 13:00:00+00:00 2026-10-22 13:15:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220930 KXHYPE15M-26OCT220930-30 HYPE price up in next 15 mins?         Crypto 2026-10-22 13:15:00+00:00 2026-10-22 13:30:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220800 KXHYPE15M-26OCT220800-00 HYPE price up in next 15 mins?         Crypto 2026-10-22 11:45:00+00:00 2026-10-22 12:00:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220245 KXHYPE15M-26OCT220245-45 HYPE price up in next 15 mins?         Crypto 2026-10-22 06:30:00+00:00 2026-10-22 06:45:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220300 KXHYPE15M-26OCT220300-00 HYPE price up in next 15 mins?         Crypto 2026-10-22 06:45:00+00:00 2026-10-22 07:00:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220515 KXHYPE15M-26OCT220515-15 HYPE price up in next 15 mins?         Crypto 2026-10-22 09:00:00+00:00 2026-10-22 09:15:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220530 KXHYPE15M-26OCT220530-30 HYPE price up in next 15 mins?         Crypto 2026-10-22 09:15:00+00:00 2026-10-22 09:30:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220545 KXHYPE15M-26OCT220545-45 HYPE price up in next 15 mins?         Crypto 2026-10-22 09:30:00+00:00 2026-10-22 09:45:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT220945 KXHYPE15M-26OCT220945-45 HYPE price up in next 15 mins?         Crypto 2026-10-22 13:30:00+00:00 2026-10-22 13:45:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221000 KXHYPE15M-26OCT221000-00 HYPE price up in next 15 mins?         Crypto 2026-10-22 13:45:00+00:00 2026-10-22 14:00:00+00:00                     0.010417
+  kalshi  KXZEC15M-26OCT220115  KXZEC15M-26OCT220115-15  ZEC price up in next 15 mins?         Crypto 2026-10-22 05:00:00+00:00 2026-10-22 05:15:00+00:00                     0.010417
+  kalshi  KXZEC15M-26OCT220100  KXZEC15M-26OCT220100-00  ZEC price up in next 15 mins?         Crypto 2026-10-22 04:45:00+00:00 2026-10-22 05:00:00+00:00                     0.010417
+  kalshi  KXZEC15M-26OCT220045  KXZEC15M-26OCT220045-45  ZEC price up in next 15 mins?         Crypto 2026-10-22 04:30:00+00:00 2026-10-22 04:45:00+00:00                     0.010417
+  kalshi  KXZEC15M-26OCT220030  KXZEC15M-26OCT220030-30  ZEC price up in next 15 mins?         Crypto 2026-10-22 04:15:00+00:00 2026-10-22 04:30:00+00:00                     0.010417
+  kalshi  KXZEC15M-26OCT220015  KXZEC15M-26OCT220015-15  ZEC price up in next 15 mins?         Crypto 2026-10-22 04:00:00+00:00 2026-10-22 04:15:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221345 KXHYPE15M-26OCT221345-45 HYPE price up in next 15 mins?         Crypto 2026-10-22 17:30:00+00:00 2026-10-22 17:45:00+00:00                     0.010417
+  kalshi  KXZEC15M-26OCT220130  KXZEC15M-26OCT220130-30  ZEC price up in next 15 mins?         Crypto 2026-10-22 05:15:00+00:00 2026-10-22 05:30:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221400 KXHYPE15M-26OCT221400-00 HYPE price up in next 15 mins?         Crypto 2026-10-22 17:45:00+00:00 2026-10-22 18:00:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221430 KXHYPE15M-26OCT221430-30 HYPE price up in next 15 mins?         Crypto 2026-10-22 18:15:00+00:00 2026-10-22 18:30:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221445 KXHYPE15M-26OCT221445-45 HYPE price up in next 15 mins?         Crypto 2026-10-22 18:30:00+00:00 2026-10-22 18:45:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221500 KXHYPE15M-26OCT221500-00 HYPE price up in next 15 mins?         Crypto 2026-10-22 18:45:00+00:00 2026-10-22 19:00:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221515 KXHYPE15M-26OCT221515-15 HYPE price up in next 15 mins?         Crypto 2026-10-22 19:00:00+00:00 2026-10-22 19:15:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221530 KXHYPE15M-26OCT221530-30 HYPE price up in next 15 mins?         Crypto 2026-10-22 19:15:00+00:00 2026-10-22 19:30:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221545 KXHYPE15M-26OCT221545-45 HYPE price up in next 15 mins?         Crypto 2026-10-22 19:30:00+00:00 2026-10-22 19:45:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221415 KXHYPE15M-26OCT221415-15 HYPE price up in next 15 mins?         Crypto 2026-10-22 18:00:00+00:00 2026-10-22 18:15:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221330 KXHYPE15M-26OCT221330-30 HYPE price up in next 15 mins?         Crypto 2026-10-22 17:15:00+00:00 2026-10-22 17:30:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221315 KXHYPE15M-26OCT221315-15 HYPE price up in next 15 mins?         Crypto 2026-10-22 17:00:00+00:00 2026-10-22 17:15:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221300 KXHYPE15M-26OCT221300-00 HYPE price up in next 15 mins?         Crypto 2026-10-22 16:45:00+00:00 2026-10-22 17:00:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221015 KXHYPE15M-26OCT221015-15 HYPE price up in next 15 mins?         Crypto 2026-10-22 14:00:00+00:00 2026-10-22 14:15:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221030 KXHYPE15M-26OCT221030-30 HYPE price up in next 15 mins?         Crypto 2026-10-22 14:15:00+00:00 2026-10-22 14:30:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221045 KXHYPE15M-26OCT221045-45 HYPE price up in next 15 mins?         Crypto 2026-10-22 14:30:00+00:00 2026-10-22 14:45:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221100 KXHYPE15M-26OCT221100-00 HYPE price up in next 15 mins?         Crypto 2026-10-22 14:45:00+00:00 2026-10-22 15:00:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221115 KXHYPE15M-26OCT221115-15 HYPE price up in next 15 mins?         Crypto 2026-10-22 15:00:00+00:00 2026-10-22 15:15:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221130 KXHYPE15M-26OCT221130-30 HYPE price up in next 15 mins?         Crypto 2026-10-22 15:15:00+00:00 2026-10-22 15:30:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221145 KXHYPE15M-26OCT221145-45 HYPE price up in next 15 mins?         Crypto 2026-10-22 15:30:00+00:00 2026-10-22 15:45:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221200 KXHYPE15M-26OCT221200-00 HYPE price up in next 15 mins?         Crypto 2026-10-22 15:45:00+00:00 2026-10-22 16:00:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221215 KXHYPE15M-26OCT221215-15 HYPE price up in next 15 mins?         Crypto 2026-10-22 16:00:00+00:00 2026-10-22 16:15:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221230 KXHYPE15M-26OCT221230-30 HYPE price up in next 15 mins?         Crypto 2026-10-22 16:15:00+00:00 2026-10-22 16:30:00+00:00                     0.010417
+  kalshi KXHYPE15M-26OCT221245 KXHYPE15M-26OCT221245-45 HYPE price up in next 15 mins?         Crypto 2026-10-22 16:30:00+00:00 2026-10-22 16:45:00+00:00                     0.010417
+
+16. SCHEDULED VS OBSERVED DURATION (MATCHED ROWS)
+======================================================================
+Markets with both durations:             91,766
+Median scheduled duration (days):        6.16
+Median observed duration (days):         3.11
+Closed earlier than scheduled (%):       32.4
+Warning: observed-close data are missing for many markets; this is a selected subset.
