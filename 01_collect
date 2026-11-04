@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+test_run=n
+while [ $# -ne 0 ]; do
+    case "$1" in
+        -t|--test) test_run="y" ;;
+        -h|--help)
+            printf 'usage: %s ' "${0/##*}"
+            printf '  -t|--test  '
+            printf '  Run a test\n'
+            exit 0 ;;
+    esac
+    shift
+done
+
+if [[ "$test_run" == "y" ]]; then
+    python collect_prediction_markets.py \
+        --out ./raw \
+        --max-pages 2 \
+        --exclude-kalshi-combos
+else
+    python collect_prediction_markets.py \
+        --out ./raw \
+        --exclude-kalshi-combos \
+        --max-pages 100
+fi
+

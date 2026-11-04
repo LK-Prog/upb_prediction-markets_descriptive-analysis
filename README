@@ -1,0 +1,33 @@
+# UPB - Prediction Markets - Descriptive Analysis
+
+Set up a python venv and install requirements with the following commands or use VS Code to make it much more user friendly.
+
+```python
+python -m venv ./.venv # Setup venv
+source <venv>/bin/activate # Activate environment
+python -m pip install -r requirements.txt # Install dependencies
+```
+
+
+## Collecting raw data
+
+Adjust the amount of collected pages according to the requirements.
+
+```python
+python collect_prediction_markets.py --out ./raw --exclude-kalshi-combos --max-pages 1000
+```
+
+
+## Merging and deduplicating to parquet
+
+```python
+python build_market_parquet.py --input ./raw --output ./analysis/data.parquet
+```
+
+
+## Run analysis
+
+```python
+python analyze_parquet_data.py
+```
+
